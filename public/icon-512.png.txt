@@ -1,0 +1,5 @@
+This is a placeholder. Replace with actual 512x512 PNG icon.
+You can generate one using:
+- https://www.favicon-generator.org/
+- Or design tools like Figma/Canva
+- Use the radio-icon.svg as reference
