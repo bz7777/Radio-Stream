@@ -1,37 +1,37 @@
 import { useState, useEffect, useRef } from 'react';
 
 /**
- * Custom hook for managing sleep timer functionality
+ * Custom hook for managing sleep timer functionality.
+ * Uses a ref for onTimerEnd to avoid stale closures,
+ * and only depends on [isActive] so the interval is
+ * created once and never recreated on each tick.
  */
 export const useSleepTimer = (onTimerEnd) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const timerRef = useRef(null);
+  const onTimerEndRef = useRef(onTimerEnd);
+
+  // Keep the ref current without restarting the interval
+  useEffect(() => {
+    onTimerEndRef.current = onTimerEnd;
+  });
 
   useEffect(() => {
-    if (isActive && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            setIsActive(false);
-            if (onTimerEnd) onTimerEnd();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    }
+    if (!isActive) return;
 
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [isActive, timeLeft, onTimerEnd]);
+    const id = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          setIsActive(false);
+          onTimerEndRef.current?.();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [isActive]);
 
   const startTimer = (minutes) => {
     setTimeLeft(minutes * 60);
@@ -49,11 +49,5 @@ export const useSleepTimer = (onTimerEnd) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  return {
-    timeLeft,
-    isActive,
-    startTimer,
-    stopTimer,
-    formatTime
-  };
+  return { timeLeft, isActive, startTimer, stopTimer, formatTime };
 };

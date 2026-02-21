@@ -4,12 +4,13 @@ import { Equalizer } from './Equalizer';
 /**
  * Mini player - sticky bottom player component
  */
-export const MiniPlayer = ({ 
+export const MiniPlayer = ({
   currentStation,
   isPlaying,
   isLoading,
   volume,
   isMuted,
+  nowPlaying,
   onTogglePlay,
   onVolumeChange,
   onToggleMute,
@@ -29,12 +30,17 @@ export const MiniPlayer = ({
           <div className="flex items-center gap-3 flex-1 min-w-0">
             {/* Station Logo */}
             <div className="relative flex-shrink-0">
-              <div className="w-14 h-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-lg">
-                <img 
-                  src={currentStation.logo} 
-                  alt={currentStation.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-14 h-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-lg flex items-center justify-center">
+                {currentStation.logo ? (
+                  <img
+                    src={currentStation.logo}
+                    alt={currentStation.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <span className="text-2xl">📻</span>
+                )}
               </div>
               {isPlaying && (
                 <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1 shadow-lg">
@@ -58,7 +64,7 @@ export const MiniPlayer = ({
               <div className="flex items-center gap-2">
                 {isPlaying && <Equalizer isPlaying={isPlaying} />}
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                  {currentStation.category} • {currentStation.country}
+                  {nowPlaying || `${currentStation.category} • ${currentStation.country}`}
                 </p>
               </div>
             </div>

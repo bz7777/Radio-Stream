@@ -1,69 +1,85 @@
-// Radio stations data with placeholder URLs
-// Replace streamUrl with your actual radio stream URLs
-
 export const radioStations = [
   {
     id: 1,
     name: "Play Radio",
     streamUrl: "https://stream.radiojar.com/0zs50dbr274tv",
-    logo: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop",
+    logo: "/logos/play-radio.png",
     category: "Pop",
     country: "Europe",
-    playCount: 0
   },
   {
     id: 2,
     name: "Club FM Radio",
     streamUrl: "https://cp1.sednastream.com/proxy/clubfm?mp=/stream",
-    logo: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=200&h=200&fit=crop",
+    logo: "/logos/club-fm.png",
     category: "Music",
     country: "Albania",
-    playCount: 0
   },
   {
     id: 3,
     name: "Alpo Radio",
     streamUrl: "https://cp1.sednastream.com/proxy/alporadio/stream",
-    logo: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=200&h=200&fit=crop",
+    logo: "/logos/alpo-radiopng.png",
     category: "News",
     country: "Albania",
-    playCount: 0
   },
   {
     id: 4,
     name: "Radio DJ",
     streamUrl: "https://radio.albaniaradiodj.al/stream",
-    logo: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&h=200&fit=crop",
+    logo: "/logos/radio-dj.png",
     category: "Electro",
     country: "Albania",
-    playCount: 0
   },
   {
     id: 5,
     name: "Radio Lushnja",
     streamUrl: "https://stream.radiolushnja.al/listen/radio_lushnja/radio.mp3",
-    logo: "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=200&h=200&fit=crop",
+    logo: "/logos/radio-lushnja.png",
     category: "Folk",
     country: "Albania",
-    playCount: 0
+    metadataUrl: "https://stream.radiolushnja.al/api/nowplaying/radio_lushnja",
+    metadataType: "azuracast",
   },
   {
     id: 6,
     name: "Top Albania Radio",
     streamUrl: "https://live.top-media.al/tar",
-    logo: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&h=200&fit=crop",
+    logo: "/logos/top-albania.png",
     category: "News",
     country: "Albania",
-    playCount: 0
   },
   {
     id: 7,
     name: "Radio Perendimi",
     streamUrl: "https://www.rtvpendimi.com:8014/stream",
-    logo: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=200&h=200&fit=crop",
+    logo: "/logos/perendimi.png",
     category: "Islamic",
     country: "Albania",
-    playCount: 0
+  },
+  {
+    id: 8,
+    name: "Radio Emigranti",
+    streamUrl: "http://host.psyradio.fm:8010/;listen.mp3",
+    logo: "/logos/radio-emigranti.png",
+    category: "Folk",
+    country: "Albania",
+  },
+  {
+    id: 9,
+    name: "Klan Radio",
+    streamUrl: "https://klanradio.tvklan.al/live/klanmusicradio1/playlist.m3u8",
+    logo: "/logos/klan-radio.png",
+    category: "Pop",
+    country: "Albania",
+  },
+  {
+    id: 10,
+    name: "Radio Marimanga",
+    streamUrl: "https://live2.tensila.com/ch1-a-1.philbro/hls/live/mystream.m3u8",
+    logo: "/logos/radio-marimanga.png",
+    category: "Folk",
+    country: "Albania",
   },
 ];
 

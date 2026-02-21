@@ -5,9 +5,9 @@ import { Heart, TrendingUp, Globe, Music } from 'lucide-react';
  */
 export const FilterTabs = ({ activeTab, onTabChange, favoritesCount }) => {
   const tabs = [
-    { id: 'all', label: 'All Stations', icon: Music },
-    { id: 'favorites', label: 'Favorites', icon: Heart, count: favoritesCount },
-    { id: 'most-played', label: 'Most Played', icon: TrendingUp },
+    { id: 'all', label: 'Të gjitha', icon: Music },
+    { id: 'favorites', label: 'Të preferuarat', icon: Heart, count: favoritesCount },
+    { id: 'most-played', label: 'Më të dëgjuarat', icon: TrendingUp },
   ];
 
   return (
@@ -61,7 +61,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           }
         `}
       >
-        All Categories
+        Të gjitha
       </button>
       {categories.map((category) => (
         <button

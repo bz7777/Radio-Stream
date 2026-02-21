@@ -39,7 +39,7 @@ export const SleepTimerModal = ({
               <Timer className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-              Sleep Timer
+              Kohëmatës gjumi
             </h2>
           </div>
           <button
@@ -58,13 +58,13 @@ export const SleepTimerModal = ({
               <div className="mb-6">
                 <Clock className="w-16 h-16 mx-auto text-primary-500 mb-4 animate-pulse" />
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                  Music will stop in
+                  Muzika do të ndalojë pas
                 </p>
                 <p className="text-5xl font-bold text-slate-900 dark:text-white mb-1">
                   {formatTime(timeLeft)}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  minutes remaining
+                  minuta të mbetura
                 </p>
               </div>
               <button
@@ -74,13 +74,13 @@ export const SleepTimerModal = ({
                 }}
                 className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition-colors duration-200"
               >
-                Cancel Timer
+                Anulo kohëmatësin
               </button>
             </div>
           ) : (
             <div>
               <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">
-                Select how long you'd like to listen
+                Zgjidhni sa kohë dëshironi të dëgjoni
               </p>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 {timerOptions.map((option) => (

@@ -9,7 +9,8 @@ import { EmptyState } from './components/EmptyState';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { useLocalStorage, useFavorites, usePlayStats } from './hooks/useLocalStorage';
 import { useSleepTimer } from './hooks/useSleepTimer';
-import { radioStations, getCategories, getCountries } from './data/stations';
+import { useNowPlaying } from './hooks/useNowPlaying';
+import { radioStations, getCategories } from './data/stations';
 
 function App() {
   // Theme state
@@ -44,6 +45,9 @@ function App() {
   // Play stats hook
   const { incrementPlayCount, getPlayCount, getMostPlayed } = usePlayStats();
 
+  // Now playing metadata hook
+  const nowPlaying = useNowPlaying(currentStation, isPlaying);
+
   // Sleep timer hook
   const sleepTimer = useSleepTimer(() => {
     pause();
@@ -58,19 +62,17 @@ function App() {
     }
   }, [isDarkMode]);
 
-  // Load last played station on mount
+  // Space bar shortcut for play/pause
   useEffect(() => {
-    try {
-      const lastPlayed = localStorage.getItem('lastPlayedStation');
-      if (lastPlayed) {
-        const station = JSON.parse(lastPlayed);
-        // Don't auto-play, just set as current
-        // play(station);
+    const handleKey = (e) => {
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        if (currentStation) togglePlay();
       }
-    } catch (err) {
-      console.error('Error loading last played station:', err);
-    }
-  }, []);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [currentStation, togglePlay]);
 
   // Register service worker for PWA
   useEffect(() => {
@@ -208,6 +210,7 @@ function App() {
         isLoading={isLoading}
         volume={volume}
         isMuted={isMuted}
+        nowPlaying={nowPlaying}
         onTogglePlay={togglePlay}
         onVolumeChange={changeVolume}
         onToggleMute={toggleMute}

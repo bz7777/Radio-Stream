@@ -80,7 +80,7 @@ export const StationCard = ({
 
             {playCount > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Played {playCount} {playCount === 1 ? 'time' : 'times'}
+                Dëgjuar {playCount} herë
               </p>
             )}
           </div>
@@ -103,12 +103,12 @@ export const StationCard = ({
             {isCurrentStation && isPlaying ? (
               <>
                 <Pause className="w-5 h-5" />
-                <span>Pause</span>
+                <span>Pauzë</span>
               </>
             ) : (
               <>
                 <Play className="w-5 h-5 ml-0.5" />
-                <span>Play</span>
+                <span>Luaj</span>
               </>
             )}
           </button>
@@ -123,7 +123,7 @@ export const StationCard = ({
                 : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
               }
             `}
-            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            aria-label={isFavorite ? 'Hiq nga të preferuarat' : 'Shto tek të preferuarat'}
           >
             <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
           </button>

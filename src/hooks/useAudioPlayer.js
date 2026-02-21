@@ -7,20 +7,23 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 export const useAudioPlayer = () => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.7);
+  const [volume, setVolume] = useState(() => {
+    const saved = localStorage.getItem('volume');
+    return saved !== null ? parseFloat(saved) : 0.7;
+  });
   const [isMuted, setIsMuted] = useState(false);
   const [currentStation, setCurrentStation] = useState(null);
   const [metadata, setMetadata] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initialize audio element
+  // Initialize audio element once on mount
   useEffect(() => {
-    audioRef.current = new Audio();
-    audioRef.current.volume = volume;
-    audioRef.current.crossOrigin = "anonymous";
+    const audio = new Audio();
+    audio.volume = parseFloat(localStorage.getItem('volume') ?? '0.7');
+    audio.crossOrigin = "anonymous";
+    audioRef.current = audio;
 
-    // Event listeners for audio state
     const handlePlay = () => {
       setIsPlaying(true);
       setIsLoading(false);
@@ -34,55 +37,47 @@ export const useAudioPlayer = () => {
 
     const handleError = (e) => {
       console.error('Audio error:', e);
-      setError('Failed to load stream');
+      setError('Transmetimi dështoi. Provo përsëri.');
       setIsLoading(false);
       setIsPlaying(false);
     };
 
-    const handleLoadStart = () => {
-      setIsLoading(true);
-    };
+    const handleLoadStart = () => setIsLoading(true);
+    const handleCanPlay = () => setIsLoading(false);
 
-    const handleCanPlay = () => {
-      setIsLoading(false);
-    };
-
-    // Metadata handling (for Icecast/Shoutcast streams)
-    const handleMetadata = () => {
-      try {
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: currentStation?.name || 'Radio Stream',
-            artist: metadata || 'Live Radio',
-            artwork: [
-              { src: currentStation?.logo || '', sizes: '512x512', type: 'image/png' }
-            ]
-          });
-        }
-      } catch (err) {
-        console.error('MediaSession error:', err);
-      }
-    };
-
-    audioRef.current.addEventListener('play', handlePlay);
-    audioRef.current.addEventListener('pause', handlePause);
-    audioRef.current.addEventListener('error', handleError);
-    audioRef.current.addEventListener('loadstart', handleLoadStart);
-    audioRef.current.addEventListener('canplay', handleCanPlay);
-    audioRef.current.addEventListener('loadedmetadata', handleMetadata);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('canplay', handleCanPlay);
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('play', handlePlay);
-        audioRef.current.removeEventListener('pause', handlePause);
-        audioRef.current.removeEventListener('error', handleError);
-        audioRef.current.removeEventListener('loadstart', handleLoadStart);
-        audioRef.current.removeEventListener('canplay', handleCanPlay);
-        audioRef.current.removeEventListener('loadedmetadata', handleMetadata);
-        audioRef.current.pause();
-        audioRef.current.src = '';
-      }
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.pause();
+      audio.src = '';
     };
+  }, []);
+
+  // Update Media Session metadata when station changes
+  useEffect(() => {
+    if (!currentStation) return;
+    try {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: currentStation.name,
+          artist: metadata || 'Live Radio',
+          artwork: currentStation.logo
+            ? [{ src: currentStation.logo, sizes: '512x512', type: 'image/png' }]
+            : [],
+        });
+      }
+    } catch (err) {
+      console.error('MediaSession error:', err);
+    }
   }, [currentStation, metadata]);
 
   // Play station
@@ -109,7 +104,7 @@ export const useAudioPlayer = () => {
       localStorage.setItem('lastPlayedStation', JSON.stringify(station));
     } catch (err) {
       console.error('Playback error:', err);
-      setError('Failed to play station');
+      setError('Transmetimi dështoi. Provo përsëri.');
       setIsPlaying(false);
       setIsLoading(false);
     }
@@ -136,6 +131,7 @@ export const useAudioPlayer = () => {
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
       setVolume(newVolume);
+      localStorage.setItem('volume', newVolume);
       if (newVolume > 0) setIsMuted(false);
     }
   }, []);

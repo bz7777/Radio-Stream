@@ -7,23 +7,23 @@ export const EmptyState = ({ type = 'search' }) => {
   const states = {
     search: {
       icon: Search,
-      title: 'No stations found',
-      description: 'Try adjusting your search or filters'
+      title: 'Asnjë stacion nuk u gjet',
+      description: 'Provo të ndryshosh kërkimin ose filtrat'
     },
     favorites: {
       icon: Heart,
-      title: 'No favorites yet',
-      description: 'Add stations to your favorites to see them here'
+      title: 'Ende nuk ke të preferuara',
+      description: 'Shto stacione tek të preferuarat për t\'i parë këtu'
     },
     mostPlayed: {
       icon: TrendingUp,
-      title: 'No play history',
-      description: 'Start listening to see your most played stations'
+      title: 'Ende nuk ka histori dëgjimi',
+      description: 'Fillo të dëgjosh për të parë stacionet më të dëgjuara'
     },
     error: {
       icon: Radio,
-      title: 'Something went wrong',
-      description: 'Please try again later'
+      title: 'Diçka shkoi keq',
+      description: 'Ju lutem provo përsëri më vonë'
     }
   };
 

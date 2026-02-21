@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { radioStations } from '../data/stations';
 
 /**
  * Custom hook for managing localStorage with JSON serialization
@@ -28,41 +29,39 @@ export const useLocalStorage = (key, initialValue) => {
 };
 
 /**
- * Hook for managing favorites
+ * Hook for managing favorites.
+ * Stores only station IDs to avoid stale data when station objects change.
+ * Migrates old format (full objects) to new format (IDs) on first load.
  */
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useLocalStorage('favorites', []);
+  const [favoriteIds, setFavoriteIds] = useLocalStorage('favoriteIds', () => {
+    // Migrate old 'favorites' key (full objects) → extract IDs
+    try {
+      const old = window.localStorage.getItem('favorites');
+      if (old) {
+        const parsed = JSON.parse(old);
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object') {
+          window.localStorage.removeItem('favorites');
+          return parsed.map(s => s.id);
+        }
+      }
+    } catch { /* ignore */ }
+    return [];
+  });
 
-  const addFavorite = (station) => {
-    setFavorites((prev) => {
-      if (prev.find(s => s.id === station.id)) return prev;
-      return [...prev, station];
-    });
-  };
+  const favorites = radioStations.filter(s => favoriteIds.includes(s.id));
 
-  const removeFavorite = (stationId) => {
-    setFavorites((prev) => prev.filter(s => s.id !== stationId));
-  };
+  const isFavorite = useCallback((stationId) => favoriteIds.includes(stationId), [favoriteIds]);
 
-  const isFavorite = (stationId) => {
-    return favorites.some(s => s.id === stationId);
-  };
+  const toggleFavorite = useCallback((station) => {
+    setFavoriteIds(prev =>
+      prev.includes(station.id)
+        ? prev.filter(id => id !== station.id)
+        : [...prev, station.id]
+    );
+  }, [setFavoriteIds]);
 
-  const toggleFavorite = (station) => {
-    if (isFavorite(station.id)) {
-      removeFavorite(station.id);
-    } else {
-      addFavorite(station);
-    }
-  };
-
-  return {
-    favorites,
-    addFavorite,
-    removeFavorite,
-    isFavorite,
-    toggleFavorite
-  };
+  return { favorites, isFavorite, toggleFavorite };
 };
 
 /**
@@ -82,16 +81,16 @@ export const usePlayStats = () => {
     return playCounts[stationId] || 0;
   };
 
-  const getMostPlayed = (stations, limit = 5) => {
+  const getMostPlayed = useCallback((stations, limit = 5) => {
     return stations
       .map(station => ({
         ...station,
-        playCount: getPlayCount(station.id)
+        playCount: playCounts[station.id] || 0
       }))
       .filter(station => station.playCount > 0)
       .sort((a, b) => b.playCount - a.playCount)
       .slice(0, limit);
-  };
+  }, [playCounts]);
 
   return {
     playCounts,
